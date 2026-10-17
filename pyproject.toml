@@ -18,7 +18,8 @@ python = ">=3.10,<3.13"
 pytest = "^8.0.0"
 ruff = "^0.9.0"
 mypy = "^1.10.0"
-twine = "^5.0.0"
+twine = ">=6.1.0"
+packaging = ">=24.2"
 
 [tool.poetry.scripts]
 venv-match = "venv_match.cli:main"
