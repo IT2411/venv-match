@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "venv_match_version": "0.1.0",
+  "captured_at": "2026-09-28T11:30:00Z",
+  "sections": {
+    "python": {
+      "implementation": "CPython",
+      "version": "3.11.9",
+      "version_info": [
+        3,
+        11,
+        9
+      ],
+      "executable": "/ci/work/.venv/bin/python",
+      "prefix": "/ci/work/.venv",
+      "base_prefix": "/usr",
+      "is_venv": true
+    },
+    "platform": {
+      "system": "Linux",
+      "release": "6.8.0",
+      "machine": "x86_64"
+    },
+    "packages": {
+      "numpy": "2.1.1",
+      "pydantic": "2.9.2"
+    },
+    "runtime": {
+      "working_directory": "/ci/work",
+      "timezone": "America/New_York",
+      "locale": "en_US.UTF-8"
+    },
+    "environment": {
+      "LANG": {
+        "present": true,
+        "value": "en_US.UTF-8"
+      },
+      "TZ": {
+        "present": false,
+        "value": null
+      }
+    }
+  },
+  "collection": {
+    "completed_sections": [
+      "python",
+      "platform",
+      "packages",
+      "runtime",
+      "environment"
+    ],
+    "errors": []
+  }
+}

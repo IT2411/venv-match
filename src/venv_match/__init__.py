@@ -4,6 +4,7 @@ from venv_match.exceptions import (
     CollectionError,
     ComparisonError,
     SnapshotFormatError,
+    UnsupportedSchemaVersionError,
     VenvMatchError,
 )
 
@@ -13,6 +14,7 @@ __all__ = [
     "__version__",
     "VenvMatchError",
     "SnapshotFormatError",
+    "UnsupportedSchemaVersionError",
     "CollectionError",
     "ComparisonError",
 ]

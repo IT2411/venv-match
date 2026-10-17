@@ -9,6 +9,10 @@ class SnapshotFormatError(VenvMatchError):
     """Raised when a snapshot fails validation, parsing, or schema checks."""
 
 
+class UnsupportedSchemaVersionError(SnapshotFormatError):
+    """Raised when a snapshot uses an unsupported schema_version."""
+
+
 class CollectionError(VenvMatchError):
     """Raised when a required environment collection or I/O operation fails."""
 
