@@ -1,5 +1,6 @@
 """Venv Match — Python environment comparison and diagnostic library."""
 
+from venv_match.compare import ComparisonReport, Difference, compare
 from venv_match.config import CaptureConfig
 from venv_match.exceptions import (
     CollectionError,
@@ -15,8 +16,11 @@ __version__ = "0.1.0"
 __all__ = [
     "__version__",
     "CaptureConfig",
+    "ComparisonReport",
+    "Difference",
     "Snapshot",
     "capture",
+    "compare",
     "load_snapshot",
     "VenvMatchError",
     "SnapshotFormatError",

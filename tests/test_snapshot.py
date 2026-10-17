@@ -7,6 +7,7 @@ import pytest
 from venv_match import (
     CaptureConfig,
     CollectionError,
+    Snapshot,
     SnapshotFormatError,
     capture,
     load_snapshot,
@@ -15,6 +16,7 @@ from venv_match import (
 
 def test_capture_default_config_succeeds() -> None:
     snap = capture()
+    assert isinstance(snap, Snapshot)
     assert snap.schema_version == "1.0"
     assert snap.venv_match_version == "0.1.0"
     assert "python" in snap.completed_sections
