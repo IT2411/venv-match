@@ -6,9 +6,27 @@ build-backend = "poetry.core.masonry.api"
 name = "venv-match"
 version = "0.1.0"
 description = "Compare Python runtime environments and investigate environment drift"
-authors = ["Venv Match Contributors"]
+authors = ["Ishaan Tidke <ishaantidke25@gmail.com>"]
 readme = "README.md"
 license = "MIT"
+homepage = "https://github.com/IT2411/venv-match"
+repository = "https://github.com/IT2411/venv-match"
+documentation = "https://github.com/IT2411/venv-match#readme"
+keywords = ["python", "virtualenv", "venv", "environment", "comparison", "diagnostics", "ci"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: System :: Systems Administration",
+    "Typing :: Typed",
+]
 packages = [{ include = "venv_match", from = "src" }]
 
 [tool.poetry.dependencies]
