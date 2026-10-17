@@ -1,0 +1,36 @@
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "venv-match"
+version = "0.1.0"
+description = "Compare Python runtime environments and investigate environment drift"
+authors = ["Venv Match Contributors"]
+readme = "README.md"
+license = "MIT"
+packages = [{ include = "venv_match", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+ruff = "^0.9.0"
+mypy = "^1.10.0"
+twine = "^5.0.0"
+
+[tool.poetry.scripts]
+venv-match = "venv_match.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+mypy_path = "src"
