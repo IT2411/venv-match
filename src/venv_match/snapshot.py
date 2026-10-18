@@ -53,6 +53,7 @@ def write_text_atomically(
         with tempfile.NamedTemporaryFile(
             mode="w",
             encoding="utf-8",
+            newline="\n",
             dir=parent,
             prefix=f".{target.name}.",
             suffix=".tmp",

@@ -1,4 +1,4 @@
-"""Tests for virtual environment creation and requirements export (v0.2.0)."""
+"""Tests for virtual environment creation and requirements export (v0.2.0+)."""
 
 import copy
 import subprocess
@@ -20,6 +20,7 @@ from venv_match.cli import (
     EXIT_SUCCESS,
     main,
 )
+from venv_match.recreate import _resolve_venv_python_path
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -130,11 +131,11 @@ def test_create_venv_invokes_venv_and_pip_safely(tmp_path: Path) -> None:
         cmd: list[str], **_kwargs: object
     ) -> subprocess.CompletedProcess[str]:
         recorded_cmds.append(list(cmd))
-        # When `python -m venv <target>` runs, create the fake bin/python
+        # When `python -m venv <target>` runs, create the platform-appropriate fake python binary
         if len(cmd) >= 3 and cmd[1:3] == ["-m", "venv"]:
-            bin_dir = target_dir / "bin"
-            bin_dir.mkdir(parents=True, exist_ok=True)
-            (bin_dir / "python").write_text("", encoding="utf-8")
+            venv_py = _resolve_venv_python_path(target_dir)
+            venv_py.parent.mkdir(parents=True, exist_ok=True)
+            venv_py.write_text("", encoding="utf-8")
         return subprocess.CompletedProcess(cmd, 0, stdout="3.12.5\n", stderr="")
 
     with patch("venv_match.recreate.subprocess.run", side_effect=_fake_run):
