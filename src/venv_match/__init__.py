@@ -9,18 +9,22 @@ from venv_match.exceptions import (
     UnsupportedSchemaVersionError,
     VenvMatchError,
 )
+from venv_match.recreate import CreateVenvResult, create_venv, export_requirements
 from venv_match.snapshot import Snapshot, capture, load_snapshot
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "__version__",
     "CaptureConfig",
     "ComparisonReport",
+    "CreateVenvResult",
     "Difference",
     "Snapshot",
     "capture",
     "compare",
+    "create_venv",
+    "export_requirements",
     "load_snapshot",
     "VenvMatchError",
     "SnapshotFormatError",

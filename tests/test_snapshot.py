@@ -18,7 +18,7 @@ def test_capture_default_config_succeeds() -> None:
     snap = capture()
     assert isinstance(snap, Snapshot)
     assert snap.schema_version == "1.0"
-    assert snap.venv_match_version == "0.1.0"
+    assert snap.venv_match_version == "0.2.0"
     assert "python" in snap.completed_sections
     assert "platform" in snap.completed_sections
     assert "packages" in snap.completed_sections

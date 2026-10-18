@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2026-04-06
+
+### Added
+
+- `venv-match create` CLI command and `create_venv()` Python API to create a virtual environment and install pinned packages from a snapshot JSON file (with `--target`, `--python`, `--include-build-tools`, `--overwrite`, and `--dry-run` options).
+- `venv-match export` CLI command and `export_requirements()` Python API to export pinned `requirements.txt` specs from a snapshot.
+- Strict package specifier validation to prevent `pip` option injection from untrusted snapshot files.
+
 ## [0.1.0] - 2026-04-06
 
 ### Added

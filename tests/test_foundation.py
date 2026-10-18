@@ -12,7 +12,7 @@ from venv_match.exceptions import (
 
 
 def test_version() -> None:
-    assert venv_match.__version__ == "0.1.0"
+    assert venv_match.__version__ == "0.2.0"
 
 
 def test_exception_hierarchy() -> None:
