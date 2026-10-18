@@ -14,6 +14,7 @@ from venv_match.snapshot import Snapshot
 DEFAULT_EXCLUDED_PACKAGES: frozenset[str] = frozenset(
     {"pip", "setuptools", "wheel", "distribute"}
 )
+DEFAULT_SUBPROCESS_TIMEOUT_SECONDS = 300
 
 _SAFE_PKG_NAME_RE = re.compile(r"^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$")
 _SAFE_VERSION_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9.+!_~-]*$")
@@ -88,10 +89,19 @@ def _query_interpreter_version(python_bin: str) -> str | None:
             capture_output=True,
             text=True,
             check=True,
+            timeout=15,
         )
         return res.stdout.strip() or None
     except Exception:
         return None
+
+
+def _cleanup_partial_venv(target: Path) -> None:
+    if target.exists() and target.is_dir():
+        try:
+            shutil.rmtree(target)
+        except OSError:
+            pass
 
 
 def create_venv(
@@ -102,6 +112,7 @@ def create_venv(
     include_build_tools: bool = False,
     overwrite: bool = False,
     dry_run: bool = False,
+    timeout: int = DEFAULT_SUBPROCESS_TIMEOUT_SECONDS,
 ) -> CreateVenvResult:
     """Create a virtual environment and install packages recorded in a Snapshot."""
     specs = export_requirements(snapshot, include_build_tools=include_build_tools)
@@ -153,18 +164,27 @@ def create_venv(
             capture_output=True,
             text=True,
             check=True,
+            timeout=timeout,
         )
+    except subprocess.TimeoutExpired as exc:
+        _cleanup_partial_venv(target)
+        raise CollectionError(
+            f"Timed out while creating virtual environment at '{target}'."
+        ) from exc
     except subprocess.CalledProcessError as exc:
+        _cleanup_partial_venv(target)
         stderr_msg = (exc.stderr or "").strip()
         raise CollectionError(
             f"Failed to create virtual environment at '{target}': {stderr_msg or exc}"
         ) from exc
     except OSError as exc:
+        _cleanup_partial_venv(target)
         raise CollectionError(
             f"Failed to execute Python interpreter '{py_exe}': {exc}"
         ) from exc
 
     if not venv_python.exists():
+        _cleanup_partial_venv(target)
         raise CollectionError(
             f"Virtual environment created at '{target}', but interpreter '{venv_python}' was not found."
         )
@@ -185,8 +205,15 @@ def create_venv(
                 capture_output=True,
                 text=True,
                 check=True,
+                timeout=timeout,
             )
+        except subprocess.TimeoutExpired as exc:
+            _cleanup_partial_venv(target)
+            raise CollectionError(
+                f"Timed out while installing packages into '{target}'."
+            ) from exc
         except subprocess.CalledProcessError as exc:
+            _cleanup_partial_venv(target)
             stderr_msg = (exc.stderr or "").strip()
             raise CollectionError(
                 f"Failed to install packages into '{target}': {stderr_msg or exc}"

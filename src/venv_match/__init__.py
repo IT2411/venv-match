@@ -10,9 +10,9 @@ from venv_match.exceptions import (
     VenvMatchError,
 )
 from venv_match.recreate import CreateVenvResult, create_venv, export_requirements
-from venv_match.snapshot import Snapshot, capture, load_snapshot
+from venv_match.snapshot import PACKAGE_VERSION, Snapshot, capture, load_snapshot
 
-__version__ = "0.2.0"
+__version__ = PACKAGE_VERSION
 
 __all__ = [
     "__version__",

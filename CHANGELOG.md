@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-04-06
+
+### Changed
+
+- Atomic file writes (`write_text_atomically`) with automatic parent directory creation for `Snapshot.save()` and `venv-match export --output`.
+- Added 10 MiB snapshot input size guard (`MAX_SNAPSHOT_BYTES`) for safe untrusted file loading.
+- Added strict validation for `--ignore` paths against known snapshot sections.
+- Added subprocess timeouts and automatic partial-directory cleanup when `create_venv()` fails mid-installation.
+- Deterministic sorting when resolving duplicate `.dist-info` distributions in `collect_packages_metadata()`.
+- Expanded CI matrix to Linux, macOS, and Windows, and added automated `.github/workflows/release.yml` for GitHub Releases and PyPI Trusted Publishing.
+
 ## [0.2.0] - 2026-04-06
 
 ### Added

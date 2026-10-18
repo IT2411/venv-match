@@ -96,7 +96,7 @@ def test_cli_export_stdout_and_file_with_overwrite_protection(
     code_dup = main(["export", baseline_path, "--output", str(req_file)])
     err = capsys.readouterr().err
     assert code_dup == EXIT_COLLECTION_OR_IO_ERROR
-    assert "already exists" in err
+    assert "Refusing to overwrite" in err
 
 
 def test_create_venv_dry_run_and_overwrite_protection(

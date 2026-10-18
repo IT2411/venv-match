@@ -134,6 +134,23 @@ class ComparisonReport:
         }
 
 
+def _validate_and_normalize_ignore_path(raw_ignore: str) -> str:
+    """Validate that an ignore path targets a known section or field path."""
+    if not isinstance(raw_ignore, str) or not raw_ignore.strip():
+        raise ComparisonError("Ignore paths must be non-empty strings.")
+    cleaned = raw_ignore.strip()
+    parts = cleaned.split(".")
+    if len(parts) < 2 or parts[0] != "sections" or parts[1] not in KNOWN_SECTIONS:
+        valid_prefixes = ", ".join(f"sections.{s}" for s in KNOWN_SECTIONS)
+        raise ComparisonError(
+            f"Invalid ignore path '{cleaned}'. Ignore paths must start with one of: {valid_prefixes}."
+        )
+    if len(parts) >= 3 and parts[1] == "packages":
+        pkg_part = ".".join(parts[2:])
+        cleaned = f"sections.packages.{normalize_package_name(pkg_part)}"
+    return cleaned
+
+
 def _make_difference(
     path: str,
     category: str,
@@ -265,15 +282,9 @@ def compare(
     if not isinstance(baseline, Snapshot) or not isinstance(current, Snapshot):
         raise ComparisonError("Both baseline and current must be Snapshot instances.")
 
-    normalized_ignores: set[str] = set()
-    for raw_ignore in ignore_paths:
-        if not isinstance(raw_ignore, str) or not raw_ignore.strip():
-            raise ComparisonError("Ignore paths must be non-empty strings.")
-        cleaned = raw_ignore.strip()
-        if cleaned.startswith("sections.packages."):
-            pkg_part = cleaned.removeprefix("sections.packages.")
-            cleaned = f"sections.packages.{normalize_package_name(pkg_part)}"
-        normalized_ignores.add(cleaned)
+    normalized_ignores: set[str] = {
+        _validate_and_normalize_ignore_path(raw_ignore) for raw_ignore in ignore_paths
+    }
 
     base_sections = baseline.sections
     curr_sections = current.sections

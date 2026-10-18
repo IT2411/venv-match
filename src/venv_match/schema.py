@@ -9,6 +9,7 @@ from venv_match.exceptions import SnapshotFormatError, UnsupportedSchemaVersionE
 
 CURRENT_SCHEMA_VERSION = "1.0"
 SUPPORTED_SCHEMA_VERSIONS: frozenset[str] = frozenset({CURRENT_SCHEMA_VERSION})
+MAX_SNAPSHOT_BYTES = 10 * 1024 * 1024  # 10 MiB limit for untrusted snapshot inputs
 
 KNOWN_SECTIONS: tuple[str, ...] = (
     "python",
@@ -336,6 +337,10 @@ def deserialize_snapshot_json(raw_json: str) -> dict[str, Any]:
     """Safely parse and validate a JSON string into a normalized snapshot dictionary."""
     if not isinstance(raw_json, str):
         raise SnapshotFormatError("Snapshot JSON input must be a string.")
+    if len(raw_json.encode("utf-8")) > MAX_SNAPSHOT_BYTES:
+        raise SnapshotFormatError(
+            f"Snapshot JSON exceeds maximum allowed size of {MAX_SNAPSHOT_BYTES} bytes."
+        )
     try:
         parsed = json.loads(raw_json)
     except json.JSONDecodeError as exc:

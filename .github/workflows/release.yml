@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  build-and-release:
+    name: Build, Create GitHub Release, and Publish to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/venv-match
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: python -m pip install poetry
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run quality checks and tests
+        run: |
+          poetry run ruff check .
+          poetry run ruff format --check .
+          poetry run mypy src/
+          poetry run pytest -q
+
+      - name: Build distribution
+        run: |
+          poetry build
+          poetry run twine check dist/*
+
+      - name: Create GitHub Release with build artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+
+      - name: Publish package to PyPI via Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1

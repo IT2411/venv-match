@@ -20,7 +20,12 @@ from venv_match.reporting import (
     format_comparison_text,
     format_inspection_text,
 )
-from venv_match.snapshot import PACKAGE_VERSION, capture, load_snapshot
+from venv_match.snapshot import (
+    PACKAGE_VERSION,
+    capture,
+    load_snapshot,
+    write_text_atomically,
+)
 
 EXIT_SUCCESS = 0
 EXIT_DIFF_THRESHOLD_MET = 1
@@ -285,17 +290,12 @@ def _handle_export(args: argparse.Namespace) -> int:
 
     if args.output is not None:
         out_path = Path(args.output)
-        if out_path.exists() and not args.overwrite:
-            sys.stderr.write(
-                f"Error: Output file '{out_path}' already exists. "
-                "Use --overwrite to replace it.\n"
-            )
-            return EXIT_COLLECTION_OR_IO_ERROR
-        try:
-            out_path.write_text(content, encoding="utf-8")
-        except OSError as exc:
-            sys.stderr.write(f"Error: Failed to write '{out_path}': {exc}\n")
-            return EXIT_COLLECTION_OR_IO_ERROR
+        write_text_atomically(
+            out_path,
+            content,
+            overwrite=bool(args.overwrite),
+            file_label="requirements file",
+        )
         sys.stdout.write(
             f"Exported {len(specs)} package requirement(s) to {out_path}\n"
         )

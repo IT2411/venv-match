@@ -9,10 +9,12 @@ from venv_match.exceptions import (
     UnsupportedSchemaVersionError,
     VenvMatchError,
 )
+from venv_match.snapshot import PACKAGE_VERSION
 
 
 def test_version() -> None:
-    assert venv_match.__version__ == "0.2.0"
+    assert venv_match.__version__ == PACKAGE_VERSION
+    assert venv_match.__version__ == "0.2.1"
 
 
 def test_exception_hierarchy() -> None:

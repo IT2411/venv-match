@@ -18,7 +18,7 @@ def collect_packages_metadata(
             if distributions is not None
             else importlib.metadata.distributions()
         )
-        packages: dict[str, str] = {}
+        pairs: list[tuple[str, str]] = []
         for dist in dist_iter:
             try:
                 meta: Any = dist.metadata
@@ -33,11 +33,14 @@ def collect_packages_metadata(
                 if not isinstance(raw_version, str) or not raw_version.strip():
                     continue
                 norm_name = normalize_package_name(raw_name)
-                packages[norm_name] = raw_version.strip()
+                pairs.append((norm_name, raw_version.strip()))
             except Exception:
                 # Ignore individual malformed distributions without failing collection
                 continue
     except Exception as exc:
         raise CollectionError(f"Failed to collect installed packages: {exc}") from exc
 
-    return dict(sorted(packages.items()))
+    # Sort by (norm_name, version) before building dict so duplicate dist-info
+    # entries in a corrupted environment always resolve deterministically.
+    pairs.sort()
+    return dict(pairs)

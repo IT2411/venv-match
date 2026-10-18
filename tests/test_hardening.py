@@ -141,3 +141,30 @@ def test_compare_rejects_non_snapshot_arguments() -> None:
     baseline = load_snapshot(FIXTURES_DIR / "baseline.json")
     with pytest.raises(ComparisonError):
         compare(baseline, {})  # type: ignore[arg-type]
+
+
+def test_invalid_ignore_path_raises_comparison_error() -> None:
+    baseline = load_snapshot(FIXTURES_DIR / "baseline.json")
+    with pytest.raises(ComparisonError, match="Invalid ignore path"):
+        compare(baseline, baseline, ignore_paths=["typo.python.version"])
+
+
+def test_oversized_snapshot_rejected(tmp_path: Path) -> None:
+    from venv_match.schema import MAX_SNAPSHOT_BYTES
+
+    huge_payload = "x" * (MAX_SNAPSHOT_BYTES + 10)
+    with pytest.raises(SnapshotFormatError, match="exceeds maximum allowed size"):
+        deserialize_snapshot_json(huge_payload)
+
+    huge_file = tmp_path / "huge.json"
+    huge_file.write_text(huge_payload, encoding="utf-8")
+    with pytest.raises(SnapshotFormatError, match="exceeds maximum allowed size"):
+        load_snapshot(huge_file)
+
+
+def test_atomic_save_creates_parent_directories(tmp_path: Path) -> None:
+    baseline = load_snapshot(FIXTURES_DIR / "baseline.json")
+    nested_target = tmp_path / "nested" / "sub" / "snap.json"
+    saved = baseline.save(nested_target)
+    assert saved.exists()
+    assert load_snapshot(saved).to_dict() == baseline.to_dict()
